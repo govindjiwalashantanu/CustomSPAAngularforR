@@ -1,5 +1,11 @@
+:host /deep/ #okta-sign-in {
+  width:800px;
+}
+
 :host /deep/ #okta-sign-in.auth-container .button {
   background: linear-gradient(#b91250, #b91250);
+  width: 20em;
+  height: 4em;
 }
 
 :host /deep/ #okta-sign-in.auth-container .button-primary:hover, #okta-sign-in.auth-container .button-primary:focus, #okta-sign-in.auth-container .button-primary:active, #okta-sign-in.auth-container .button-primary:focus{
