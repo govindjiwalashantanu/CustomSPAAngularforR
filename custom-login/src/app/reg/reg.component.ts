@@ -27,12 +27,12 @@ import 'rxjs/add/operator/filter';
 export class RegComponent implements OnInit {
   regStepOneForm = this.fb.group({
     accountNo: ['',Validators.required],
-    postalCode: ['',Validators.required],
+    postalCode: ['',[Validators.required, Validators.maxLength(6), Validators.minLength(6)]],
   });
 
   regStepTwoForm = this.fb.group({
     email: ['',[Validators.required, Validators.email]],
-    phoneNumber: ['',[Validators.required]],
+    phoneNumber: ['',[Validators.required, Validators.maxLength(10), Validators.minLength(10)]],
   });
 
   regStepThreeForm = this.fb.group({
@@ -58,6 +58,9 @@ export class RegComponent implements OnInit {
     this.step = '1';
 
   }
+
+  // convenience getter for easy access to form fields
+    get f() { return this.regStepOneForm.controls; }
 
   back(){
     if(this.step=='1') return;
@@ -86,6 +89,19 @@ export class RegComponent implements OnInit {
 
 }
 
+resendEmail(){
+  this.user.login = this.regStepTwoForm.value.phoneNumber;
+  console.log("IAMHEREEEEEEEEEEEEEEEEEEEEIAMHEREEEEEEEEEEEEEEEEEEEEIAMHEREEEEEEEEEEEEEEEEEEEEIAMHEREEEEEEEEEEEEEEEEEEEEIAMHEREEEEEEEEEEEEEEEEEEEE");
+  const data = new HttpParams()
+      .set('login', this.user.login);
+
+  this.http.post<any>("https://reset-password-okta.glitch.me/resendEmail", data).subscribe(response => {
+        console.log(response);
+  })
+  //this.step ++;
+  console.log(this.user);
+}
+
 onStepTwoSubmit() {
   this.user.email = this.regStepTwoForm.value.email;
   this.user.login = this.regStepTwoForm.value.phoneNumber;
@@ -95,7 +111,7 @@ onStepTwoSubmit() {
       .set('accountNumber', this.user.accountNo)
       .set('postalCode', this.user.postalCode)
       .set('planId', this.user.planId)
-      .set('login', this.user.phoneNumber);
+      .set('login', this.user.login);
 
   this.http.post<any>("https://reset-password-okta.glitch.me/activateUser", data).subscribe(response => {
         console.log(response);
@@ -135,7 +151,9 @@ onStepThreeSubmit() {
     en: {
       'primaryauth.title': 'Set Your Password',
       'password.reset': 'Set your Password',
-      'password.reset.title': 'Set your Password'
+      'password.reset.title': 'Set your Password',
+      'password.forgot.email.or.username.placeholder': 'Email or Phone Number',
+      'password.forgot.email.or.username.tooltip': 'Email or Phone Number'
     }
   }});
     eSignIn.renderEl({
